@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: test.settings
+  labels:
+    service: test
+    track: experimental
+data:
+  uwsgi.yaml: |
+    uwsgi:
+      node_memory_gigabytes: 14
+      node_workers: 5
+      buffer-size: 32768
+      listen: 100  # inbound (kernel -> uwsgi) pending connection limit
+      master: true
+      workers: %(node_workers)
+      reload-on-rss: %(1024 * (node_memory_gigabytes - 1) / 5)
+      max-requests: 1000
+      socket: :3031
+      stats: :3032
+      callable: app
+      wsgi-file: /usr/local/ezyinsights/wsgi.py
+      memory-report: true
+      chmod: 644
+      lazy-apps: true
+      need-app: true
+      enable-threads: true
+      ignore-sigpipe: true
+      ignore-write-errors: true
+      # see kubernetes sends SIGTERM so we tell UWSGI to exit instead of reload on SIGTERM
+      die-on-term: true
+      logformat: {"started_at": %(tmsecs), "request_id": "%(var.HTTP_X_REQUEST_ID)", "correlation_id": "%(var.HTTP_X_CORRELATION_ID)", "status": %(status), "method": "%(method)", "uri": "%(uri)", "elapsed": %(msecs), "request_body_bytes": %(cl), "response_body_bytes": %(rsize)}

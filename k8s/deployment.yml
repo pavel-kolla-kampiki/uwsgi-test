@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: test.uwsgi
+  labels:
+    service: test
+    track: experimental
+spec:
+  replicas: 2
+#  minReadySeconds: 5
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  selector:
+    matchLabels:
+      service: test
+      track: experimental
+  template:
+    metadata:
+      labels:
+        service: test
+        track: experimental
+    spec:
+      volumes:
+      - name: test-settings
+        configMap:
+          name: test.settings
+      containers:
+        - name: test-uwsgi
+          imagePullPolicy: IfNotPresent
+          image: eu.gcr.io/ezyrealtime/uwsgi-test:1
+          readinessProbe:
+            exec:
+              command:
+              - "sh"
+              - "-c"
+              - "nc localhost 3032 -q 0 | grep '\"accepting\":1'"
+            initialDelaySeconds: 30
+            periodSeconds: 60
+          livenessProbe:
+            exec:
+              command:
+              - "sh"
+              - "-c"
+              - "nc localhost 3032 -q 0 | grep '\"accepting\":1'"
+            initialDelaySeconds: 30
+            periodSeconds: 60
+            failureThreshold: 4
+          volumeMounts:
+          - name: test-settings
+            readOnly: true
+            mountPath: /usr/local/ezyinsights/uwsgi.yaml
+            subPath: uwsgi.yaml
+          command: ["uwsgi"]
+          args: ["--yaml", "/usr/local/ezyinsights/uwsgi.yaml"]

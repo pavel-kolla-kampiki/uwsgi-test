@@ -1,0 +1,18 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: test-service
+  labels:
+    service: test
+    track: experimental
+spec:
+  selector:
+    service: test
+    track: experimental
+  ports:
+    - name: uwsgi
+      protocol: TCP
+      port: 3031
+    - name: uwsgi-stats
+      protocol: TCP
+      port: 3032
