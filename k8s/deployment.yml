@@ -36,7 +36,7 @@ spec:
               command:
               - "sh"
               - "-c"
-              - "nc localhost 3032 -q 0 | grep '\"accepting\":1' || echo \"Readiness @ $(date): $?\" >> /tmp/log || nc localhost 3032 -q 0 | grep '\"accepting\":1'"
+              - "nc localhost 3032 -q 0 | grep '\"accepting\":1' || echo \"Readiness @ $(date): $?\" >> /tmp/log && nc localhost 3032 -q 0 | grep '\"accepting\":1'"
             initialDelaySeconds: 30
             periodSeconds: 60
             timeoutSeconds: 5
@@ -45,7 +45,7 @@ spec:
               command:
               - "sh"
               - "-c"
-              - "nc localhost 3032 -q 0 | grep '\"accepting\":1' || echo \"Liveness @ $(date): $?\" >> /tmp/log || nc localhost 3032 -q 0 | grep '\"accepting\":1'"
+              - "nc localhost 3032 -q 0 | grep '\"accepting\":1' || echo \"Liveness @ $(date): $?\" >> /tmp/log && nc localhost 3032 -q 0 | grep '\"accepting\":1'"
             initialDelaySeconds: 30
             periodSeconds: 60
             failureThreshold: 4
