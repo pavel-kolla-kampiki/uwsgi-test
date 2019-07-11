@@ -34,7 +34,7 @@ spec:
           readinessProbe:
             exec:
               command:
-              - "sh"
+              - "/bin/sh"
               - "-c"
               - "nc localhost 3032 -q 0 | grep '\"accepting\":1' || echo \"Readiness @ $(date): $?\" >> /tmp/log && nc localhost 3032 -q 0 | grep '\"accepting\":1'"
             initialDelaySeconds: 30
@@ -43,7 +43,7 @@ spec:
           livenessProbe:
             exec:
               command:
-              - "sh"
+              - "/bin/sh"
               - "-c"
               - "nc localhost 3032 -q 0 | grep '\"accepting\":1' || echo \"Liveness @ $(date): $?\" >> /tmp/log && nc localhost 3032 -q 0 | grep '\"accepting\":1'"
             initialDelaySeconds: 30
