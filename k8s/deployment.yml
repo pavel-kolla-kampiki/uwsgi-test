@@ -43,9 +43,9 @@ spec:
           livenessProbe:
             exec:
               command:
-              - "/bin/sh"
-              - "-c"
-              - "nc localhost 3032 -q 0 | grep '\"accepting\":1' || echo \"Liveness @ $(date): $?\" >> /tmp/log && nc localhost 3032 -q 0 | grep '\"accepting\":1'"
+              - sh
+              - -c
+              - "nc -z localhost 3032 -q 0 | grep '\"accepting\":1' || echo \"Liveness @ $(date): $?\" >> /tmp/log && nc localhost 3032 -q 0 | grep '\"accepting\":1'"
             initialDelaySeconds: 30
             periodSeconds: 60
             failureThreshold: 4
